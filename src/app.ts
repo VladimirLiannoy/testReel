@@ -46,7 +46,7 @@ export class App extends PIXI.Application {
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
     }
-   
+
     resize() {
         //TODO: Implement responsive resize.
     }
