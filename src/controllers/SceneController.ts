@@ -1,17 +1,17 @@
-import { Container } from "pixi.js";
-import { App } from "../app";
-import { Scene } from "../scene";
+import {Container} from "pixi.js";
+import {App} from "../app";
+import {Scene} from "../scene";
 
 
-export enum SceneLayer { UI, GAME };
+export enum SceneLayer { UI, GAME }
 
 export class SceneController {
 
     private lastLoadedScene: Scene;
     private loadedScenes: Scene[] = [];
 
-    private uiLayer: PIXI.Container;
-    private gameLayer: PIXI.Container;
+    private readonly uiLayer: PIXI.Container;
+    private readonly gameLayer: PIXI.Container;
 
     constructor() {
         this.gameLayer = new Container();
@@ -41,8 +41,7 @@ export class SceneController {
         this.addSceneContainer();
     }
 
-    public destroyCurrentScene() : void
-    {
+    public destroyCurrentScene(): void {
         for (var i = this.loadedScenes.length - 1; i >= 0; i--) {
             if (this.loadedScenes[i] === this.lastLoadedScene) {
                 this.loadedScenes.splice(i, 1);
@@ -53,10 +52,9 @@ export class SceneController {
         this.lastLoadedScene.destroy();
         this.lastLoadedScene = undefined;
 
-        if(this.loadedScenes.length < 1)  
+        if (this.loadedScenes.length < 1)
             throw new Error("No scenes availables!.");
-        else
-        {
+        else {
             this.lastLoadedScene = this.loadedScenes[this.loadedScenes.length - 1];
         }
     }
@@ -73,6 +71,15 @@ export class SceneController {
             this.uiLayer.addChild(this.lastLoadedScene.sceneContainer);
         else
             this.gameLayer.addChild(this.lastLoadedScene.sceneContainer);
+    }
+
+    public updateSizeConfig(scale: number, leftOffset: number, topOffset: number, width: number, height: number): void {
+
+        App.application.renderer.resize(width, height);
+        App.application.stage.scale.set(scale);
+
+        this.gameLayer.position.set(leftOffset, topOffset);
+        this.uiLayer.position.set(leftOffset, topOffset);
     }
 
     private mainUpdate(delta): void {

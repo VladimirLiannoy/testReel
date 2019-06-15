@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "author": "André Lacerda",
     "dependencies": {
+        "pixi-particles": "^4.1.1",
         "pixi.js": "^4.8.5"
     },
     "devDependencies": {

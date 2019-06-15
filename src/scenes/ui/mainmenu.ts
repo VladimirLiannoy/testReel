@@ -1,12 +1,16 @@
+import {SceneLayer} from "../../controllers/SceneController";
+import {Scene} from "../../scene";
+import {SpinButtonConfig, SpinButtonPosition} from "../../config/settings";
+import {Button} from "../../components/Button";
+import {App} from "../../app";
+import {Particles} from "../../components/Particles";
+import {imagesRes, jsonRes, loadedFiles} from "../../config/resources";
 
-import { SceneLayer } from "../../controllers/SceneController";
-import { loadedFiles, imagesRes } from "../../config/resources";
-import { Scene } from "../../scene";
-import { ScreenSize } from "../../config/settings";
+export enum SpinButtonActions {Click = "spinButtonClick", Hover = "spinButtonHover"}
 
 export class MainMenuScene extends Scene {
-
-    private title: PIXI.Sprite;
+    private spinButton: Button;
+    private particles: Particles;
 
     constructor(layer: SceneLayer) {
         super(layer);
@@ -14,15 +18,42 @@ export class MainMenuScene extends Scene {
     }
 
     protected create(): void {
+        this.particles = this.createParticles();
+        this.spinButton = this.createSpinButton(this.onSpinButtonClick.bind(this));
+    }
 
-        this.title = new PIXI.Sprite(loadedFiles[imagesRes.title].texture);
-        this.title.anchor.set(0.5);
-        this.title.x = ScreenSize.width / 2;
-        this.title.y = ScreenSize.height / 2;
+    private createParticles(): Particles {
+        const {x, y} = SpinButtonPosition;
+        const texture = loadedFiles[imagesRes["particle"]].texture;
+        const emitterConfig = loadedFiles[jsonRes["ringEmitterConfig"]].data;
+        const particles = new Particles(emitterConfig, texture);
 
-        this.sceneContainer.addChild(this.title);
+        particles.position.set(x, y);
+
+        this.sceneContainer.addChild(particles);
+
+        return particles;
+    }
+
+    private onSpinButtonClick(): void {
+        App.messageHandler.fireEvent(SpinButtonActions.Click);
+
+        //Emit particles behind spin button
+        this.particles.emitOnce(0.05);
+    }
+
+    private createSpinButton(clickCallback: Function): Button {
+        const {x, y} = SpinButtonPosition;
+        const spinButton = new Button(SpinButtonConfig, clickCallback);
+
+        spinButton.position.set(x, y);
+
+        this.sceneContainer.addChild(spinButton);
+
+        return spinButton;
     }
 
     public update(delta: number): void {
+        this.particles.update(delta);
     }
 }
