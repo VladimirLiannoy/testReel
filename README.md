@@ -1,5 +1,8 @@
 #Test one reel game
 
+## Demo
+https://vladimirliannoy.github.io/testReel/
+
 ### Install
 Open your terminal and type the command `npm install` to install all dependences.
 
