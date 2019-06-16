@@ -58,6 +58,10 @@ export class App extends PIXI.Application {
 
     private addListeners(): void {
         window.addEventListener('resize', this.resize.bind(this));
+        //iOS Chrome fix
+        window.addEventListener('orientationchange', ()=>{
+            setTimeout(this.resize.bind(this), 100);
+        });
         this.resize();
     }
 
